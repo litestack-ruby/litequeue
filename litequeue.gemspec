@@ -7,12 +7,12 @@ Gem::Specification.new do |spec|
   spec.version = Litequeue::VERSION
   spec.authors = ["Mohamed Hassan", "Stephen Margheim"]
   spec.email = ["oldmoe@gmail.com", "stephen.margheim@gmail.com"]
-  
+
   spec.summary = "A SQLite based, lightning fast, super efficient and dead simple to setup and use queue backend for Ruby and Rails applications!"
   spec.homepage = "https://github.com/litestack-ruby/litequeue"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
-  
+
   spec.metadata["allowed_push_host"] = "https://rubygems.org"
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = spec.homepage
