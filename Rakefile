@@ -20,7 +20,7 @@ task :update_readme_coverage_badge do
   branch_coverage = last_run_coverage.dig("result", "branch")
   average_coverage = [(branch_coverage * 1), (line_coverage * 1.5)].sum.fdiv(2.5).round
   badge_color = if average_coverage >= 75
-    :green
+    :brightgreen
   else
     :red
   end
