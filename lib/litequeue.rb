@@ -41,7 +41,7 @@ class Litequeue
       .merge(migrations: self.class.migrations,
         statements: self.class.statements)
 
-    @db = Litedb.new(file, options)
+    @db = Litedb::Connection.new(file, options)
     # Once the instance has been initialized, don't allow the configuration to be changed
     # as it won't have any effect.
     configuration.freeze
