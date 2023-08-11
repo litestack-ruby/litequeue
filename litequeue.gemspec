@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
-  spec.add_dependency "litedb", ">= 0.2.0"
+  spec.add_dependency "litedb", ">= 0.2.1"
 
   spec.add_development_dependency "simplecov"
 
