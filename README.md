@@ -1,5 +1,10 @@
 # Litequeue
 
+[![Gem Version](https://badge.fury.io/rb/litequeue.svg)](https://rubygems.org/gems/litequeue)
+[![Gem Downloads](https://img.shields.io/gem/dt/litequeue)](https://rubygems.org/gems/litequeue)
+![Tests](https://github.com/litestack-ruby/litequeue/actions/workflows/main.yml/badge.svg)
+![Coverage](https://img.shields.io/badge/code_coverage-100%25-green)
+
 TODO: Delete this and the text below, and describe your gem
 
 Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/litequeue`. To experiment with that code, run `bin/console` for an interactive prompt.
