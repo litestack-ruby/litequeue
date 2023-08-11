@@ -10,7 +10,7 @@ describe Litequeue do
       config.path = "test/queue.sqlite3"
     end
   end
-  
+
   after do
     Litequeue.instance_variable_set :@configuration, nil
   end
