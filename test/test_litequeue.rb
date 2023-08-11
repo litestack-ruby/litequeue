@@ -3,20 +3,31 @@
 require "test_helper"
 
 describe Litequeue do
+  before do
+    # we don't want to pollute the repo with SQLite files, so we ensure that we set the path
+    # here to the /test directory.
+    Litequeue.configure do |config|
+      config.path = "test/queue.sqlite3"
+    end
+  end
+  
   after do
     Litequeue.instance_variable_set :@configuration, nil
   end
 
   describe ".configuration" do
     it "has default path as queue database" do
+      Litequeue.instance_variable_set :@configuration, nil
       assert_equal "queue.sqlite3", Litequeue.configuration.path
     end
 
     it "has default synchronous off" do
+      Litequeue.instance_variable_set :@configuration, nil
       assert_equal :OFF, Litequeue.configuration.synchronous
     end
 
     it "has default mmap_size as 32 kilobyes" do
+      Litequeue.instance_variable_set :@configuration, nil
       assert_equal 32768, Litequeue.configuration.mmap_size
     end
 
@@ -39,14 +50,6 @@ describe Litequeue do
   end
 
   describe ".instance" do
-    before do
-      # we don't want to pollute the repo with SQLite files, so we ensure that we set the path
-      # here to the /test directory.
-      Litequeue.configure do |config|
-        config.path = "test/queue.sqlite3"
-      end
-    end
-
     it "is a singleton" do
       assert_same Litequeue.instance, Litequeue.instance
     end
@@ -69,7 +72,7 @@ describe Litequeue do
       end
 
       assert_equal :NORMAL, Litequeue.configuration.synchronous
-      assert_equal "queue.sqlite3", Litequeue.configuration.path
+      assert_equal "test/queue.sqlite3", Litequeue.configuration.path
       assert_equal 32768, Litequeue.configuration.mmap_size
     end
 
@@ -79,7 +82,7 @@ describe Litequeue do
       end
 
       assert_equal 0, Litequeue.configuration.mmap_size
-      assert_equal "queue.sqlite3", Litequeue.configuration.path
+      assert_equal "test/queue.sqlite3", Litequeue.configuration.path
       assert_equal :OFF, Litequeue.configuration.synchronous
     end
 
