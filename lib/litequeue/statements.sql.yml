@@ -1,0 +1,48 @@
+push: >
+  INSERT INTO queue(id, name, fire_at, value)
+  VALUES (HEX(RANDOMBLOB(32)), $1, (UNIXEPOCH('subsec') + $2), $3)
+  RETURNING id, name;
+
+pop: >
+  DELETE FROM queue
+  WHERE name != '_dead'
+  AND (name, fire_at, id)
+  IN (
+      SELECT name, fire_at, id FROM queue
+      WHERE name = IFNULL($1, 'default')
+      AND fire_at <= (UNIXEPOCH('subsec'))
+      ORDER BY fire_at ASC
+      LIMIT IFNULL($2, 1)
+  )
+  RETURNING id, value;
+
+repush: >
+  INSERT INTO queue(id, name, fire_at, value)
+  VALUES ($1, $2, (UNIXEPOCH('subsec') + $3), $4)
+  RETURNING name;
+
+delete: >
+  DELETE FROM queue
+  WHERE id = $1
+  RETURNING value;
+
+count: >
+  SELECT COUNT(*)
+  FROM queue
+  WHERE IIF($1 IS NULL, 1, name = $1);
+
+clear: >
+  DELETE FROM queue
+  WHERE IIF($1 IS NULL, 1, name = $1)
+  RETURNING id;
+
+info: >
+  SELECT 
+    name, 
+    COUNT(*) AS count, 
+    AVG(UNIXEPOCH('subsec') - created_at) AS avg, 
+    MIN(UNIXEPOCH('subsec') - created_at) AS min, 
+    MAX(UNIXEPOCH('subsec') - created_at) AS max
+  FROM queue 
+  GROUP BY name 
+  ORDER BY count DESC;
