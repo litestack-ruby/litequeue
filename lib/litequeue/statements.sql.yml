@@ -1,6 +1,6 @@
 push: >
   INSERT INTO queue(id, name, fire_at, value)
-  VALUES (HEX(RANDOMBLOB(32)), $1, (UNIXEPOCH('subsec') + $2), $3)
+  VALUES (HEX(RANDOMBLOB(32)), $1, (IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH()) + $2), $3)
   RETURNING id, name;
 
 pop: >
@@ -10,7 +10,7 @@ pop: >
   IN (
       SELECT name, fire_at, id FROM queue
       WHERE name = IFNULL($1, 'default')
-      AND fire_at <= (UNIXEPOCH('subsec'))
+      AND fire_at <= IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH())
       ORDER BY fire_at ASC
       LIMIT IFNULL($2, 1)
   )
@@ -18,7 +18,7 @@ pop: >
 
 repush: >
   INSERT INTO queue(id, name, fire_at, value)
-  VALUES ($1, $2, (UNIXEPOCH('subsec') + $3), $4)
+  VALUES ($1, $2, (IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH()) + $3), $4)
   RETURNING name;
 
 delete: >
@@ -40,9 +40,9 @@ info: >
   SELECT 
     name, 
     COUNT(*) AS count, 
-    AVG(UNIXEPOCH('subsec') - created_at) AS avg, 
-    MIN(UNIXEPOCH('subsec') - created_at) AS min, 
-    MAX(UNIXEPOCH('subsec') - created_at) AS max
+    AVG(IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH()) - created_at) AS avg, 
+    MIN(IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH()) - created_at) AS min, 
+    MAX(IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH()) - created_at) AS max
   FROM queue 
   GROUP BY name 
   ORDER BY count DESC;

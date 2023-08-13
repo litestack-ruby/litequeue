@@ -113,13 +113,13 @@ describe Litequeue do
   describe ".statements" do
     it "returns Hash from YAML file" do
       expected = {
-        "push" => "INSERT INTO queue(id, name, fire_at, value) VALUES (HEX(RANDOMBLOB(32)), $1, (UNIXEPOCH('subsec') + $2), $3) RETURNING id, name;\n",
-        "repush" => "INSERT INTO queue(id, name, fire_at, value) VALUES ($1, $2, (UNIXEPOCH('subsec') + $3), $4) RETURNING name;\n",
-        "pop" => "DELETE FROM queue WHERE name != '_dead' AND (name, fire_at, id) IN (\n    SELECT name, fire_at, id FROM queue\n    WHERE name = IFNULL($1, 'default')\n    AND fire_at <= (UNIXEPOCH('subsec'))\n    ORDER BY fire_at ASC\n    LIMIT IFNULL($2, 1)\n) RETURNING id, value;\n",
+        "push" => "INSERT INTO queue(id, name, fire_at, value) VALUES (HEX(RANDOMBLOB(32)), $1, (IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH()) + $2), $3) RETURNING id, name;\n",
+        "repush" => "INSERT INTO queue(id, name, fire_at, value) VALUES ($1, $2, (IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH()) + $3), $4) RETURNING name;\n",
+        "pop" => "DELETE FROM queue WHERE name != '_dead' AND (name, fire_at, id) IN (\n    SELECT name, fire_at, id FROM queue\n    WHERE name = IFNULL($1, 'default')\n    AND fire_at <= IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH())\n    ORDER BY fire_at ASC\n    LIMIT IFNULL($2, 1)\n) RETURNING id, value;\n",
         "delete" => "DELETE FROM queue WHERE id = $1 RETURNING value;\n",
         "count" => "SELECT COUNT(*) FROM queue WHERE IIF($1 IS NULL, 1, name = $1);\n",
         "clear" => "DELETE FROM queue WHERE IIF($1 IS NULL, 1, name = $1) RETURNING id;\n",
-        "info" => "SELECT \n  name, \n  COUNT(*) AS count, \n  AVG(UNIXEPOCH('subsec') - created_at) AS avg, \n  MIN(UNIXEPOCH('subsec') - created_at) AS min, \n  MAX(UNIXEPOCH('subsec') - created_at) AS max\nFROM queue  GROUP BY name  ORDER BY count DESC;\n"
+        "info" => "SELECT \n  name, \n  COUNT(*) AS count, \n  AVG(IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH()) - created_at) AS avg, \n  MIN(IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH()) - created_at) AS min, \n  MAX(IFNULL(UNIXEPOCH('subsec'), UNIXEPOCH()) - created_at) AS max\nFROM queue  GROUP BY name  ORDER BY count DESC;\n"
       }
 
       assert_equal expected, Litequeue.statements
