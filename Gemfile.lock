@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    litequeue (0.2.0)
+    litequeue (0.2.1)
       litedb (>= 0.2.1)
 
 GEM
